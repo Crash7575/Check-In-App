@@ -1,0 +1,103 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class CSVReader {
+	
+	private String path; // The path to the CSV file on the computer
+	private String line = ""; // This is used to store each row
+	private ArrayList<String[]> rows = new ArrayList<String[]>(); // This is an in-between to make the 2D array adapt to the CSV file
+	private String[][] importedSheet; // This is the finished conversion
+	
+  public CSVReader(String path) 
+	{
+		this.path = path;
+		CSVConvert();
+	}
+  
+	
+  public void CSVConvert() 
+	{
+		/**
+		 * This method converts a CSV file into a 2D array called "importedSheet"
+		 * 
+		 * @author Seth Blanchard
+		 * @version 6/3/2021
+		 */
+		
+		// This pulls the data from a CSV file and converts it to an ArrayList of arrays with each array being the rows
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(path));// Buffered Reader will read line by line quickly
+					
+			while((line = br.readLine()) != null) { // If the current line is not empty then read it
+				rows.add(line.split(",")); // Split the row at the point of the commas into an array then add that array to the ArrayList	
+			}
+			
+		} catch (FileNotFoundException e) { //These catch the possible errors that could occur
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+			
+		importedSheet = new String[rows.size()][rows.get(0).length]; //This is a 2D array that will hold the full CSV file
+		
+		// This converts the ArrayList of arrays with each array being the rows into a 2D array
+		// What it does is it gets the full row array from the ArrayList then inserts the full array into the 2D array
+		for(int index = 0; index < rows.size(); index++) {
+			importedSheet[index] = rows.get(index);
+		} 
+	} // End of CSVConvert
+
+
+  public String[] getRow(int row)
+  {
+  //Cole: This function returns a specific row in the 2D array of students aa an array of strings
+    String[] studentRow = new String[importedSheet[row].length];
+    if (importedSheet.length >= 1)
+    {
+      for (int i=0; i< importedSheet[row].length; i++)
+      {
+        studentRow[i] = importedSheet[row][i];
+      }
+    }
+    return studentRow;
+  } // End of getRow
+  
+   
+  public String[][] get2DArrayData()
+  {
+  //Cole: This function returns the entire 2D array of strings
+    String[][] empty = {{""},{""}};
+    if (importedSheet.length >= 1)
+        return importedSheet;
+    else 
+        return empty;
+  } // End of get2DArrayData
+  
+  
+  public String[] getColumn(int col) 
+  {
+    //Hans: This function returns a specific column in the 2D array of students as an array of Strings
+    //If you need all of the values of a specific parameter (i.e. all names, IDs, etc.)
+
+    String[] neededCol = new String[rows.size()]; //2D array is rectangular so all column lengths are the same
+    for (int i = 0; i < neededCol.length; i++)
+    {
+      neededCol[i] = importedSheet[i][col];
+    }
+    return neededCol;
+  } //End of getColumn
+
+
+  public String getCell(int row, int col)
+  {
+    //Collin
+    //Returns a cell from coordinates provided by the user.
+    return importedSheet[row][col];
+  } // End of getCell
+} 
